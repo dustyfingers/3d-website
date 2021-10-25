@@ -93,12 +93,35 @@ const moon = new THREE.Mesh(
   })
 );
 
+moon.position.z = 30;
+moon.position.x = -10;
+
 scene.add(moon);
 
 const rotateTorus = () => {
   torus.rotation.x += 0.01;
   torus.rotation.y += 0.005;
   torus.rotation.z += 0.01;
+}
+
+const rotateMoon = () => {
+  moon.rotation.x += 0.05;
+  moon.rotation.y += 0.075;
+  moon.rotation.z += 0.05;
+}
+
+const rotateLou = () => {
+  lou.rotation.y += 0.01;
+  lou.rotation.x += 0.01;
+}
+
+const moveCamera = () => {
+  const currentTop = document.body.getBoundingClientRect().top;
+
+  rotateMoon();
+  rotateLou();
+
+  camera.position.z = currentTop * -0.01;
 }
 
 // constantly rerender
@@ -112,4 +135,5 @@ const rerender = () => {
   renderer.render(scene, camera);
 }
 
+document.body.onscroll = moveCamera;
 rerender()
