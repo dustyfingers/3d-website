@@ -53,18 +53,63 @@ scene.add(gridHelper);
 // build controls 
 const controls = new OrbitControls(camera, renderer.domElement);
 
-// constantly rerender
-const animate = () => {
-  requestAnimationFrame(animate);
+const addStar = () => {
+  const starGeometry = new THREE.SphereGeometry(0.25, 24, 24);
+  const starMaterial = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
+  const star = new THREE.Mesh(starGeometry, starMaterial);
 
-  // rotates the torus
+  // randomly generate x, y, z vals
+  const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(200))
+
+  star.position.set(x, y, z);
+
+  scene.add(star);
+}
+
+// add 200 random stars 
+Array(200).fill().forEach(() => addStar());
+
+// space texture for scene bg
+const spaceTexture = new THREE.TextureLoader().load('space.jpg');
+scene.background = spaceTexture;
+
+// avatar 
+const louTexture = new THREE.TextureLoader().load('headshot.jpg');
+const lou = new THREE.Mesh(
+  new THREE.BoxGeometry(3,3,3),
+  new THREE.MeshBasicMaterial({ map: louTexture })
+);
+
+scene.add(lou);
+
+// moon 
+const moonTexture = new THREE.TextureLoader().load('moon.jpg');
+const moonNormal = new THREE.TextureLoader().load('normal.jpg');
+const moon = new THREE.Mesh(
+  new THREE.SphereGeometry(3, 32, 32),
+  new THREE.MeshStandardMaterial({ 
+    map: moonTexture,
+    normalMap: moonNormal
+  })
+);
+
+scene.add(moon);
+
+const rotateTorus = () => {
   torus.rotation.x += 0.01;
   torus.rotation.y += 0.005;
   torus.rotation.z += 0.01;
+}
+
+// constantly rerender
+const rerender = () => {
+  requestAnimationFrame(rerender);
+
+  rotateTorus();
 
   controls.update();
 
   renderer.render(scene, camera);
 }
 
-animate()
+rerender()
